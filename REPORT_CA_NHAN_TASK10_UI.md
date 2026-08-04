@@ -153,6 +153,18 @@ tests/test_individual.py::TestTask10::test_reorder_function_exists PASSED
 ============================== 3 passed in 3.45s ===============================
 ```
 
+### 4.1. Kiểm thử tích hợp với golden dataset của nhóm
+
+Sau khi tổng hợp pipeline, tôi dùng 20 câu hỏi trong `group_project/evaluation/golden_dataset.json` để kiểm tra điểm nối giữa retrieval, Task 10 và UI:
+
+- dataset có đủ 20 bản ghi và đúng cấu trúc `id`, `question`, `expected_answer`, `expected_context`;
+- toàn bộ `doc_id` trong expected context tồn tại trong corpus chuẩn hóa;
+- hybrid retrieval tìm đúng tài liệu expected ở Top-1 cho 20/20 câu;
+- ba câu đại diện cho chính sách trả hàng, bảo mật và vận chuyển đều được Task 10 trả lời có citation;
+- Streamlit AppTest với câu hỏi trong golden dataset có 0 exception, hiển thị câu trả lời và expander nguồn.
+
+Đây là smoke test tích hợp cho phần Task 10/UI và công việc tổng hợp, không thay thế báo cáo RAGAS/A-B evaluation do thành viên phụ trách đánh giá của nhóm thực hiện.
+
 ## 5. Lỗi gặp phải và cách khắc phục
 
 ### Task 9 chưa được implement
