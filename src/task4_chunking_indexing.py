@@ -35,6 +35,8 @@ trong cùng collection, retrieval sẽ trả về kết quả rác từ dữ li�
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
 CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
@@ -45,9 +47,9 @@ CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
 # =============================================================================
 
 # TODO: Chọn chunking strategy và giải thích vì sao
-CHUNK_SIZE = 500        # Vì sao chọn 500? ...
-CHUNK_OVERLAP = 50      # Vì sao chọn 50? ...
-CHUNKING_METHOD = "markdown_header"  # "recursive" | "markdown_header" | "semantic"
+CHUNK_SIZE = 800        # Vì sao chọn 500? ...
+CHUNK_OVERLAP = 100      # Vì sao chọn 50? ...
+CHUNKING_METHOD = "recursive"  # "recursive" | "markdown_header" | "semantic"
 
 # TODO: Chọn embedding model và giải thích
 EMBEDDING_MODEL = "BAAI/bge-m3"  # Vì sao? Multilingual, tốt cho tiếng Việt lẫn tiếng Anh
@@ -93,32 +95,30 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
     # TODO: Implement chunking
     #
     # Ví dụ với RecursiveCharacterTextSplitter:
-    # from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_text_splitters import MarkdownHeaderTextSplitter
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-    # splitter = RecursiveCharacterTextSplitter(
-    #     chunk_size=CHUNK_SIZE,
-    #     chunk_overlap=CHUNK_OVERLAP,
-    #     separators=["\n\n", "\n", ". ", " ", ""]
-    # )
-
-    headers_to_split_on = [
-    ("#", "title"),
-    ("##", "section"),
-    ("###", "subsection"),
-    ("####", "subsubsection"),]
-
-    splitter = MarkdownHeaderTextSplitter(
-    headers_to_split_on=headers_to_split_on,
-    strip_headers=False,   
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
+        separators=["\n\n", "\n", ". ", " ", ""]
     )
+
+
+    # splitter = MarkdownHeaderTextSplitter(
+    # headers_to_split_on=headers_to_split_on,
+    # strip_headers=False,   
+    # )
     chunks = []
     for doc in documents:
         splits = splitter.split_text(doc["content"])
-        for i, chunk_text in enumerate(splits):
+
+        for i, split in enumerate(splits):
             chunks.append({
-                "content": chunk_text,
-                "metadata": {**doc["metadata"], "chunk_index": i}
+                "content": split,
+                "metadata": {
+                    **doc["metadata"],
+                    "chunk_index": i,
+                }
             })
     return chunks
     # raise NotImplementedError("Implement chunk_documents")
@@ -154,7 +154,7 @@ def embed_chunks(chunks: list[dict]) -> list[dict]:
     # rồi gọi lại hàm đó ở đây và ở Task 5 — tránh viết logic embed lặp lại 2 nơi.
 
     if not chunks: 
-        return chunks:
+        return chunks
 
     texts = [chunk["content"] for chunk in chunks]
 
@@ -194,7 +194,6 @@ def index_to_vectorstore(chunks: list[dict]):
         embeddings=[c["embedding"] for c in chunks],
         metadatas=[c["metadata"] for c in chunks],
     )
-    raise NotImplementedError("Implement index_to_vectorstore")
 
 
 def run_pipeline():

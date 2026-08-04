@@ -40,16 +40,19 @@ def upload_documents():
     #
     # Tham khảo: https://github.com/VectifyAI/PageIndex
     #
-    # from pageindex.client import PageIndexClient
+    from pageindex.client import PageIndexClient
     #
-    # client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
+    client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
     #
-    # for md_file in STANDARDIZED_DIR.rglob("*.md"):
+    for md_file in STANDARDIZED_DIR.rglob("*.md"):
     #     # Lưu ý: PageIndex nhận PDF, không nhận .md trực tiếp — có thể cần
-    #     # convert markdown sang PDF đơn giản bằng fpdf2 trước khi upload.
-    #     resp = client.submit_document(str(pdf_path))
-    #     doc_id = resp.get("doc_id") or resp.get("id")
-    #     print(f"  ✓ Uploaded: {md_file.name} -> {doc_id}")
+        # convert markdown sang PDF đơn giản bằng fpdf2 trước khi upload.
+# pip install fpdf2
+
+
+        resp = client.submit_document(str(pdf_path))
+        doc_id = resp.get("doc_id") or resp.get("id")
+        print(f"  ✓ Uploaded: {md_file.name} -> {doc_id}")
     raise NotImplementedError("Implement upload_documents")
 
 
@@ -72,28 +75,28 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
     """
     # TODO: Implement PageIndex query
     #
-    # from pageindex.client import PageIndexClient
+    from pageindex.client import PageIndexClient
     #
-    # client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
-    # resp = client.submit_query(doc_id=doc_id, query=query)
-    # retrieval_id = resp.get("retrieval_id") or resp.get("id")
+    client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
+    resp = client.submit_query(doc_id=doc_id, query=query)
+    retrieval_id = resp.get("retrieval_id") or resp.get("id")
     #
-    # # Poll cho đến khi status == "completed"
-    # retrieval = client.get_retrieval(retrieval_id)
+    # Poll cho đến khi status == "completed"
+    retrieval = client.get_retrieval(retrieval_id)
     #
-    # # Parse retrieval["retrieved_nodes"] — mỗi node có "relevant_contents"
-    # results = []
-    # for node in retrieval.get("retrieved_nodes", [])[:2]:
-    #     for group in node.get("relevant_contents", []):
-    #         for item in group:
-    #             results.append({
-    #                 "content": item.get("relevant_content", ""),
-    #                 "score": ...,  # PageIndex không trả score trực tiếp — tự gán theo rank
-    #                 "metadata": {"section": item.get("section_title")},
-    #                 "source": "pageindex",
-    #             })
-    # return results[:top_k]
-    raise NotImplementedError("Implement pageindex_search")
+    # Parse retrieval["retrieved_nodes"] — mỗi node có "relevant_contents"
+    results = []
+    for node in retrieval.get("retrieved_nodes", [])[:2]:
+        for group in node.get("relevant_contents", []):
+            for item in group:
+                results.append({
+                    "content": item.get("relevant_content", ""),
+                    "score": ...,  # PageIndex không trả score trực tiếp — tự gán theo rank
+                    "metadata": {"section": item.get("section_title")},
+                    "source": "pageindex",
+                })
+    return results[:top_k]
+    # raise NotImplementedError("Implement pageindex_search")
 
 
 if __name__ == "__main__":

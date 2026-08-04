@@ -34,26 +34,34 @@ def rerank_cross_encoder(
     # TODO: Implement cross-encoder reranking
     #
     # Option A: Jina Reranker API
-    # import requests
-    # response = requests.post(
-    #     "https://api.jina.ai/v1/rerank",
-    #     headers={"Authorization": f"Bearer {JINA_API_KEY}"},
-    #     json={
-    #         "model": "jina-reranker-v2-base-multilingual",
-    #         "query": query,
-    #         "documents": [c["content"] for c in candidates],
-    #         "top_n": top_k
-    #     }
-    # )
-    # reranked = response.json()["results"]
+    import requests
+    response = requests.post(
+        "https://api.jina.ai/v1/rerank",
+        headers={"Authorization": f"Bearer {JINA_API_KEY}"},
+        json={
+            "model": "jina-reranker-v2-base-multilingual",
+            "query": query,
+            "documents": [c["content"] for c in candidates],
+            "top_n": top_k
+        }
+    )
+    reranked = response.json()["results"]
     # return [
     #     {**candidates[r["index"]], "score": r["relevance_score"]}
     #     for r in reranked
     # ]
-    #
+    
     # Option B: Local model (Qwen3-Reranker)
-    # from transformers import AutoModelForSequenceClassification, AutoTokenizer
-    # ...
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+    model_name = "Qwen/Qwen3-Reranker-0.6B"
+
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_name,
+        torch_dtype="auto",
+        device_map="auto"
+    )
     raise NotImplementedError("Implement rerank_cross_encoder")
 
 
@@ -79,35 +87,35 @@ def rerank_mmr(
     """
     # TODO: Implement MMR
     #
-    # selected = []
-    # remaining = list(range(len(candidates)))
+    selected = []
+    remaining = list(range(len(candidates)))
+    
+    for _ in range(min(top_k, len(candidates))):
+        best_idx = None
+        best_score = float('-inf')
+    
+        for idx in remaining:
+            # Relevance to query
+            relevance = cosine_sim(query_embedding, candidates[idx]["embedding"])
+    
+            # Max similarity to already selected
+            max_sim_to_selected = 0
+            for sel_idx in selected:
+                sim = cosine_sim(candidates[idx]["embedding"], candidates[sel_idx]["embedding"])
+                max_sim_to_selected = max(max_sim_to_selected, sim)
+    
+            # MMR score
+            mmr_score = lambda_param * relevance - (1 - lambda_param) * max_sim_to_selected
     #
-    # for _ in range(min(top_k, len(candidates))):
-    #     best_idx = None
-    #     best_score = float('-inf')
-    #
-    #     for idx in remaining:
-    #         # Relevance to query
-    #         relevance = cosine_sim(query_embedding, candidates[idx]["embedding"])
-    #
-    #         # Max similarity to already selected
-    #         max_sim_to_selected = 0
-    #         for sel_idx in selected:
-    #             sim = cosine_sim(candidates[idx]["embedding"], candidates[sel_idx]["embedding"])
-    #             max_sim_to_selected = max(max_sim_to_selected, sim)
-    #
-    #         # MMR score
-    #         mmr_score = lambda_param * relevance - (1 - lambda_param) * max_sim_to_selected
-    #
-    #         if mmr_score > best_score:
-    #             best_score = mmr_score
-    #             best_idx = idx
-    #
-    #     selected.append(best_idx)
-    #     remaining.remove(best_idx)
-    #
-    # return [candidates[i] for i in selected]
-    raise NotImplementedError("Implement rerank_mmr")
+            if mmr_score > best_score:
+                best_score = mmr_score
+                best_idx = idx
+    
+        selected.append(best_idx)
+        remaining.remove(best_idx)
+    
+    return [candidates[i] for i in selected]
+    # raise NotImplementedError("Implement rerank_mmr")
 
 
 def rerank_rrf(
@@ -128,26 +136,26 @@ def rerank_rrf(
     """
     # TODO: Implement RRF
     #
-    # rrf_scores = {}  # content -> score
-    # content_map = {}  # content -> full dict
-    #
-    # for ranked_list in ranked_lists:
-    #     for rank, item in enumerate(ranked_list, 1):
-    #         key = item["content"]
-    #         rrf_scores[key] = rrf_scores.get(key, 0) + 1 / (k + rank)
-    #         content_map[key] = item
-    #
-    # # Sort by RRF score
-    # sorted_items = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
-    #
-    # results = []
-    # for content, score in sorted_items[:top_k]:
-    #     item = content_map[content].copy()
-    #     item["score"] = score
-    #     results.append(item)
-    #
-    # return results
-    raise NotImplementedError("Implement rerank_rrf")
+    rrf_scores = {}  # content -> score
+    content_map = {}  # content -> full dict
+    
+    for ranked_list in ranked_lists:
+        for rank, item in enumerate(ranked_list, 1):
+            key = item["content"]
+            rrf_scores[key] = rrf_scores.get(key, 0) + 1 / (k + rank)
+            content_map[key] = item
+    
+    # Sort by RRF score
+    sorted_items = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
+    
+    results = []
+    for content, score in sorted_items[:top_k]:
+        item = content_map[content].copy()
+        item["score"] = score
+        results.append(item)
+    
+    return results
+    # raise NotImplementedError("Implement rerank_rrf")
 
 
 # =============================================================================
