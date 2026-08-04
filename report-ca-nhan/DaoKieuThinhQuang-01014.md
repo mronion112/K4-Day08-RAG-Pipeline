@@ -19,7 +19,6 @@ Phần việc cá nhân gồm hai nội dung:
    - từ chối trả lời khi không có đủ evidence.
 2. Tích hợp Task 10 vào **Streamlit UI** để người dùng nhập câu hỏi, xem câu trả lời, nguồn tham khảo và retrieval score.
 
-Ngoài phần code được giao, tôi hỗ trợ tổng hợp các phần đã hoàn thành của nhóm để kiểm tra luồng end-to-end. Tôi không nhận triển khai hay viết báo cáo thay cho owner của Task 1–9.
 
 ## 2. Nội dung đã implement
 
@@ -203,4 +202,4 @@ Sau khi nhận kết quả, Task 10 tạo câu trả lời và trả lại nguy�
 
 ## Kết luận
 
-Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**; sau khi tích hợp pipeline, toàn bộ bộ test đạt **30 passed, 5 skipped**. Trong đó Task 7–8 được ghi nhận là skip vì không kịp hoàn thiện trong thời gian trên lớp và Task 8 thiếu API key miễn phí phù hợp. Streamlit AppTest khởi chạy và trả lời truy vấn thật mà không có exception.
+Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**; sau khi tích hợp pipeline, toàn bộ bộ test đạt **30 passed, 5 skipped**.(Test7, 8 skip vì vấn đề thời gian và key) Streamlit AppTest khởi chạy và trả lời truy vấn thật mà không có exception.
