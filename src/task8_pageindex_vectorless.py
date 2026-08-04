@@ -23,77 +23,102 @@ có field "deprecation" cảnh báo) và trả kết quả trong "retrieved_node
 """
 
 import os
+import time
+import json
 from pathlib import Path
 from dotenv import load_dotenv
+
+from pageindex.client import PageIndexClient
 
 load_dotenv()
 
 PAGEINDEX_API_KEY = os.getenv("PAGEINDEX_API_KEY", "")
 STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
+LANDING_DIR = Path(__file__).parent.parent / "data" / "landing"
+
+_client = None
+
+
+def _get_client():
+    global _client
+    if _client is None:
+        _client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
+    return _client
 
 
 def upload_documents():
-    """
-    Upload toàn bộ markdown documents lên PageIndex.
-    """
-    # TODO: Implement upload
-    #
-    # Tham khảo: https://github.com/VectifyAI/PageIndex
-    #
-    # from pageindex.client import PageIndexClient
-    #
-    # client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
-    #
-    # for md_file in STANDARDIZED_DIR.rglob("*.md"):
-    #     # Lưu ý: PageIndex nhận PDF, không nhận .md trực tiếp — có thể cần
-    #     # convert markdown sang PDF đơn giản bằng fpdf2 trước khi upload.
-    #     resp = client.submit_document(str(pdf_path))
-    #     doc_id = resp.get("doc_id") or resp.get("id")
-    #     print(f"  ✓ Uploaded: {md_file.name} -> {doc_id}")
-    raise NotImplementedError("Implement upload_documents")
+    client = _get_client()
+
+    pdf_files = list((LANDING_DIR / "legal").glob("*.pdf"))
+    if not pdf_files:
+        print("No PDF files found in data/landing/legal/")
+        return []
+
+    doc_ids = []
+    for pdf_path in pdf_files:
+        print(f"Uploading: {pdf_path.name}...")
+        try:
+            resp = client.submit_document(str(pdf_path))
+            doc_id = resp.get("doc_id") or resp.get("id")
+            print(f"  ✓ doc_id: {doc_id}")
+
+            # Poll until retrieval ready
+            for _ in range(30):
+                if client.is_retrieval_ready(doc_id):
+                    print(f"  ✓ Retrieval ready")
+                    break
+                time.sleep(2)
+
+            doc_ids.append(doc_id)
+        except Exception as e:
+            print(f"  ✗ Error: {e}")
+
+    return doc_ids
 
 
 def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
-    """
-    Vectorless retrieval sử dụng PageIndex.
-    Dùng làm fallback khi hybrid search không có kết quả tốt.
+    client = _get_client()
 
-    Args:
-        query: Câu truy vấn
-        top_k: Số lượng kết quả tối đa
+    # Get all existing documents
+    docs_resp = client.list_documents(limit=50)
+    doc_ids = [d["id"] for d in docs_resp.get("documents", [])]
 
-    Returns:
-        List of {
-            'content': str,
-            'score': float,
-            'metadata': dict,
-            'source': 'pageindex'   # Đánh dấu nguồn retrieval
-        }
-    """
-    # TODO: Implement PageIndex query
-    #
-    # from pageindex.client import PageIndexClient
-    #
-    # client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
-    # resp = client.submit_query(doc_id=doc_id, query=query)
-    # retrieval_id = resp.get("retrieval_id") or resp.get("id")
-    #
-    # # Poll cho đến khi status == "completed"
-    # retrieval = client.get_retrieval(retrieval_id)
-    #
-    # # Parse retrieval["retrieved_nodes"] — mỗi node có "relevant_contents"
-    # results = []
-    # for node in retrieval.get("retrieved_nodes", [])[:2]:
-    #     for group in node.get("relevant_contents", []):
-    #         for item in group:
-    #             results.append({
-    #                 "content": item.get("relevant_content", ""),
-    #                 "score": ...,  # PageIndex không trả score trực tiếp — tự gán theo rank
-    #                 "metadata": {"section": item.get("section_title")},
-    #                 "source": "pageindex",
-    #             })
-    # return results[:top_k]
-    raise NotImplementedError("Implement pageindex_search")
+    if not doc_ids:
+        print("No documents in PageIndex. Run upload_documents() first.")
+        return []
+
+    all_results = []
+    for doc_id in doc_ids:
+        try:
+            # Submit retrieval query
+            submit_resp = client.submit_query(doc_id=doc_id, query=query)
+            retrieval_id = submit_resp.get("retrieval_id") or submit_resp.get("id")
+
+            # Poll for results
+            for _ in range(30):
+                retrieval = client.get_retrieval(retrieval_id)
+                status = retrieval.get("status", "")
+                if status == "completed":
+                    break
+                time.sleep(2)
+
+            retrieved_nodes = retrieval.get("retrieved_nodes", [])
+            for node in retrieved_nodes:
+                for group in node.get("relevant_contents", []):
+                    for item in group:
+                        all_results.append({
+                            "content": item.get("relevant_content", ""),
+                            "score": 1.0,
+                            "metadata": {
+                                "section": item.get("section_title", ""),
+                                "doc_id": doc_id,
+                            },
+                            "source": "pageindex",
+                        })
+        except Exception as e:
+            print(f"  ✗ Error querying doc {doc_id}: {e}")
+
+    return all_results[:top_k]
 
 
 if __name__ == "__main__":
@@ -105,6 +130,6 @@ if __name__ == "__main__":
         upload_documents()
 
         print("\nTest query:")
-        results = pageindex_search("danh sách sản phẩm cấm đăng bán", top_k=3)
+        results = pageindex_search("quy định trả hàng hoàn tiền", top_k=3)
         for r in results:
-            print(f"[{r['score']:.3f}] {r['content'][:100]}...")
+            print(f"[{r['score']:.3f}] source={r['source']} | {r['content'][:100]}...")
