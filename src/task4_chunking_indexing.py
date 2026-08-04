@@ -47,7 +47,7 @@ CHROMA_DIR = Path(__file__).parent.parent / "chroma_db"
 # TODO: Chọn chunking strategy và giải thích vì sao
 CHUNK_SIZE = 500        # Vì sao chọn 500? ...
 CHUNK_OVERLAP = 50      # Vì sao chọn 50? ...
-CHUNKING_METHOD = "recursive"  # "recursive" | "markdown_header" | "semantic"
+CHUNKING_METHOD = "markdown_header"  # "recursive" | "markdown_header" | "semantic"
 
 # TODO: Chọn embedding model và giải thích
 EMBEDDING_MODEL = "BAAI/bge-m3"  # Vì sao? Multilingual, tốt cho tiếng Việt lẫn tiếng Anh
@@ -70,16 +70,17 @@ def load_documents() -> list[dict]:
         List of {'content': str, 'metadata': {'source': str, 'type': str}}
     """
     # TODO: Iterate qua STANDARDIZED_DIR, đọc .md files
-    # documents = []
-    # for md_file in STANDARDIZED_DIR.rglob("*.md"):
-    #     content = md_file.read_text(encoding="utf-8")
-    #     doc_type = "legal" if "legal" in str(md_file) else "news"
-    #     documents.append({
-    #         "content": content,
-    #         "metadata": {"source": md_file.name, "type": doc_type}
-    #     })
-    # return documents
-    raise NotImplementedError("Implement load_documents")
+    documents = []
+    for md_file in STANDARDIZED_DIR.rglob("*.md"):
+        content = md_file.read_text(encoding="utf-8")
+        doc_type = "legal" if "legal" in str(md_file) else "news"
+        documents.append({
+            "content": content,
+            "metadata": {"source": md_file.name, "type": doc_type}
+        })
+    return documents
+
+    # raise NotImplementedError("Implement load_documents")
 
 
 def chunk_documents(documents: list[dict]) -> list[dict]:
@@ -93,23 +94,40 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
     #
     # Ví dụ với RecursiveCharacterTextSplitter:
     # from langchain_text_splitters import RecursiveCharacterTextSplitter
-    #
+    from langchain_text_splitters import MarkdownHeaderTextSplitter
+
     # splitter = RecursiveCharacterTextSplitter(
     #     chunk_size=CHUNK_SIZE,
     #     chunk_overlap=CHUNK_OVERLAP,
     #     separators=["\n\n", "\n", ". ", " ", ""]
     # )
-    # chunks = []
-    # for doc in documents:
-    #     splits = splitter.split_text(doc["content"])
-    #     for i, chunk_text in enumerate(splits):
-    #         chunks.append({
-    #             "content": chunk_text,
-    #             "metadata": {**doc["metadata"], "chunk_index": i}
-    #         })
-    # return chunks
-    raise NotImplementedError("Implement chunk_documents")
 
+    headers_to_split_on = [
+    ("#", "title"),
+    ("##", "section"),
+    ("###", "subsection"),
+    ("####", "subsubsection"),]
+
+    splitter = MarkdownHeaderTextSplitter(
+    headers_to_split_on=headers_to_split_on,
+    strip_headers=False,   
+    )
+    chunks = []
+    for doc in documents:
+        splits = splitter.split_text(doc["content"])
+        for i, chunk_text in enumerate(splits):
+            chunks.append({
+                "content": chunk_text,
+                "metadata": {**doc["metadata"], "chunk_index": i}
+            })
+    return chunks
+    # raise NotImplementedError("Implement chunk_documents")
+
+from openai import OpenAI
+import os
+
+client = OpenAI(api_key = os.getenv("OPENAI_API_KEY"))
+EMBEDDING_MODEL = "text-embedding-3-small"
 
 def embed_chunks(chunks: list[dict]) -> list[dict]:
     """
@@ -134,7 +152,23 @@ def embed_chunks(chunks: list[dict]) -> list[dict]:
     # 1 hàm embed_texts(texts) dispatch theo os.getenv("EMBEDDING_PROVIDER") sang
     # sentence-transformers | Google (genai.embed_content) | OpenAI (client.embeddings.create)
     # rồi gọi lại hàm đó ở đây và ở Task 5 — tránh viết logic embed lặp lại 2 nơi.
-    raise NotImplementedError("Implement embed_chunks")
+
+    if not chunks: 
+        return chunks:
+
+    texts = [chunk["content"] for chunk in chunks]
+
+    response = client.embeddings.create(
+        model=EMBEDDING_MODEL,
+        input=texts,
+    )
+
+    for chunk, embedding in zip(chunks, response.data):
+        chunk["embedding"] = embedding.embedding
+
+    return chunks
+
+    # raise NotImplementedError("Implement embed_chunks")
 
 
 def index_to_vectorstore(chunks: list[dict]):
@@ -144,22 +178,22 @@ def index_to_vectorstore(chunks: list[dict]):
     # TODO: Implement indexing
     #
     # Ví dụ với ChromaDB:
-    # import chromadb
+    import chromadb
     #
-    # CHROMA_DIR.mkdir(parents=True, exist_ok=True)
-    # client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    # collection = client.get_or_create_collection(
-    #     name=COLLECTION_NAME,
-    #     metadata={"hnsw:space": "cosine"},
-    # )
+    CHROMA_DIR.mkdir(parents=True, exist_ok=True)
+    client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+    collection = client.get_or_create_collection(
+        name=COLLECTION_NAME,
+        metadata={"hnsw:space": "cosine"},
+    )
     #
-    # ids = [f"{c['metadata']['source']}_chunk_{c['metadata']['chunk_index']}" for c in chunks]
-    # collection.upsert(
-    #     ids=ids,
-    #     documents=[c["content"] for c in chunks],
-    #     embeddings=[c["embedding"] for c in chunks],
-    #     metadatas=[c["metadata"] for c in chunks],
-    # )
+    ids = [f"{c['metadata']['source']}_chunk_{c['metadata']['chunk_index']}" for c in chunks]
+    collection.upsert(
+        ids=ids,
+        documents=[c["content"] for c in chunks],
+        embeddings=[c["embedding"] for c in chunks],
+        metadatas=[c["metadata"] for c in chunks],
+    )
     raise NotImplementedError("Implement index_to_vectorstore")
 
 
