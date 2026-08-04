@@ -1,17 +1,242 @@
 [
   {
-    "question": "Người mua có thể yêu cầu trả hàng/hoàn tiền trong thời hạn bao lâu sau khi nhận hàng?",
-    "expected_answer": "Trong vòng 15 ngày kể từ khi giao hàng thành công (24 giờ đối với thực phẩm tươi sống/đông lạnh).",
-    "expected_context": "Trang Returns and Refunds Policy, mục Return/Refund Eligibility"
+    "id": "gd-01",
+    "question": "Người mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng bao nhiêu ngày kể từ khi giao hàng thành công?",
+    "expected_answer": "Người mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng 15 ngày kể từ lúc đơn hàng được cập nhật giao hàng thành công. Riêng với thực phẩm tươi sống và đông lạnh, thời hạn chỉ là 24 giờ.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "3.2",
+        "snippet": "Người Mua có thể gửi yêu cầu trả hàng/hoàn tiền trong vòng 15 (mười lăm) ngày kể từ lúc đơn hàng được cập nhật giao hàng thành công. Riêng đối với các Sản Phẩm là thực phẩm tươi sống và đông lạnh, Người Mua cần gửi yêu cầu trả hàng/hoàn tiền trong vòng 24 giờ."
+      }
+    ]
   },
   {
-    "question": "Shopee hỗ trợ những phương thức thanh toán nào?",
-    "expected_answer": "ShopeePay Wallet, thẻ tín dụng/ghi nợ, trả góp qua thẻ, QR Code, chuyển khoản qua app ngân hàng, thẻ NAPAS, Apple Pay, Google Pay, và COD.",
-    "expected_context": "Trang Payment Methods Overview"
+    "id": "gd-02",
+    "question": "Trả hàng COM (không còn nhu cầu) áp dụng cho những đối tượng người mua nào?",
+    "expected_answer": "Trả hàng COM chỉ áp dụng cho \"Người Mua hợp lệ\", gồm: (i) thành viên chương trình khách hàng thân thiết Shopee đạt hạng Vàng và Kim Cương, và (ii) người mua đang sử dụng Gói ShopeeVIP.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "4.1.a",
+        "snippet": "Trả hàng COM sẽ chỉ được áp dụng với các đối tượng: (i) thành viên Chương trình khách hàng thân thiết Shopee đạt hạng Vàng và Kim Cương; (ii) Người Mua đang sử dụng Gói ShopeeVIP."
+      }
+    ]
   },
   {
-    "question": "Người bán không được đăng bán những sản phẩm nào?",
-    "expected_answer": "Hàng giả/nhái, sản phẩm bất hợp pháp, vi phạm sở hữu trí tuệ, và các mặt hàng nằm trong danh sách cấm của sàn.",
-    "expected_context": "Trang Product Listing Regulations, mục Prohibited Content"
+    "id": "gd-03",
+    "question": "Hạn mức trả hàng COM mỗi tháng đối với người dùng Gói ShopeeVIP là bao nhiêu lần?",
+    "expected_answer": "Người dùng Gói ShopeeVIP được Trả hàng COM tối đa 15 lần trong mỗi tháng dương lịch. Trong khi đó, khách hàng thân thiết hạng Vàng và Kim Cương không giới hạn hạn mức theo tháng (trừ khi vi phạm chính sách).",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "4.2",
+        "snippet": "Đối với Người Mua sử dụng Gói ShopeeVIP, hạn mức Trả hàng COM là 15 (mười lăm) lần trong mỗi tháng dương lịch."
+      }
+    ]
+  },
+  {
+    "id": "gd-04",
+    "question": "Ai chịu chi phí vận chuyển chiều hoàn trả sản phẩm khi đơn giao không thành công?",
+    "expected_answer": "Người Bán sẽ chịu chi phí vận chuyển cho chiều hoàn trả sản phẩm đối với các đơn giao không thành công, cũng như các đơn được Shopee chấp thuận trả hàng/hoàn tiền mà không do lỗi của người mua hoặc đơn vị vận chuyển.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "7.1",
+        "snippet": "Người Bán sẽ chịu chi phí vận chuyển cho việc trả hàng chiều hoàn trả sản phẩm đối với: đơn yêu cầu trả hàng/hoàn tiền được Shopee chấp thuận mà không do lỗi của Người Mua hoặc đơn vị vận chuyển; đơn giao không thành công."
+      }
+    ]
+  },
+  {
+    "id": "gd-05",
+    "question": "Tiền hoàn trả cho người mua có thể được chuyển vào những kênh nào?",
+    "expected_answer": "Tiền hoàn trả có thể được chuyển vào Ví ShopeePay, SPayLater, Thẻ nội địa Napas, Tài Khoản Ngân Hàng, Thẻ tín dụng/ghi nợ hoặc Số Dư Tài Khoản Shopee của người mua.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "9.4",
+        "snippet": "Tiền hoàn trả sẽ được chuyển vào Ví ShopeePay, SPayLater, Thẻ nội địa Napas, Tài Khoản Ngân Hàng, Thẻ tín dụng/ghi nợ hoặc Số Dư Tài Khoản Shopee của Người Mua."
+      }
+    ]
+  },
+  {
+    "id": "gd-06",
+    "question": "Shopee thu thập những loại dữ liệu cá nhân cơ bản nào của người dùng?",
+    "expected_answer": "Shopee có thể thu thập họ tên, email, ngày sinh, địa chỉ thanh toán/giao nhận, tài khoản ngân hàng và thông tin thanh toán, số điện thoại, giới tính, thông tin thiết bị, danh sách liên hệ (nếu đồng ý chia sẻ), hình ảnh/âm thanh/video, thông tin nhân thân do chính phủ cấp, dữ liệu giao dịch và lịch sử sử dụng, cùng dữ liệu vị trí.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-bao-mat",
+        "section": "3.1",
+        "snippet": "họ tên; địa chỉ email; ngày sinh; địa chỉ thanh toán và/hoặc giao nhận hàng hóa; tài khoản ngân hàng và thông tin thanh toán; số điện thoại; giới tính; ... dữ liệu về địa điểm."
+      }
+    ]
+  },
+  {
+    "id": "gd-07",
+    "question": "Chính sách bảo mật của Shopee có áp dụng cho trẻ em dưới 13 tuổi không?",
+    "expected_answer": "Không. Dịch vụ của Shopee không dành cho trẻ em dưới 13 tuổi, và Shopee không cố tình thu thập dữ liệu cá nhân của người dưới 13 tuổi. Nếu phát hiện, Shopee sẽ khóa tài khoản và xóa dữ liệu cá nhân liên quan.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-bao-mat",
+        "section": "9",
+        "snippet": "Các Dịch Vụ này không dành cho trẻ em dưới 13 tuổi. Chúng tôi không cố tình thu thập hay lưu giữ bất kỳ dữ liệu cá nhân... Chúng tôi sẽ khóa bất kỳ tài khoản nào chỉ được sử dụng bởi đối tượng trẻ em như vậy."
+      }
+    ]
+  },
+  {
+    "id": "gd-08",
+    "question": "Người dùng muốn rút lại sự đồng ý xử lý dữ liệu cá nhân thì liên hệ Shopee bằng cách nào?",
+    "expected_answer": "Người dùng có thể gửi email cho Chuyên viên Bảo Vệ Dữ Liệu Cá Nhân của Shopee tại dpo.vn@shopee.com để yêu cầu rút lại sự đồng ý, hạn chế hoặc phản đối việc xử lý dữ liệu cá nhân.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-bao-mat",
+        "section": "13.1.1",
+        "snippet": "Bạn có thể rút lại sự đồng ý cho phép, yêu cầu hạn chế, phản đối trong việc thu thập, xử lý, sử dụng và/hoặc tiết lộ dữ liệu cá nhân của bạn bằng cách gửi email cho Chuyên viên Bảo Vệ Dữ Liệu Cá Nhân của chúng tôi tại địa chỉ email dpo.vn@shopee.com."
+      }
+    ]
+  },
+  {
+    "id": "gd-09",
+    "question": "Shopee có được chuyển dữ liệu cá nhân của người dùng ra nước ngoài không?",
+    "expected_answer": "Có, thông tin và dữ liệu cá nhân có thể được chuyển ra nước ngoài, lưu trữ hoặc xử lý bên ngoài Việt Nam cho một hoặc nhiều mục đích, nhưng Shopee chỉ thực hiện việc này khi phù hợp với quy định pháp luật về bảo vệ dữ liệu cá nhân.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-bao-mat",
+        "section": "12",
+        "snippet": "Thông tin và/hoặc dữ liệu cá nhân của bạn có thể được chuyển ra nước ngoài, lưu trữ hoặc xử lý bên ngoài quốc gia của bạn cho một hoặc nhiều Mục đích. Shopee sẽ chỉ chuyển dữ liệu cá nhân của bạn ra nước ngoài khi phù hợp với các quy định của pháp luật."
+      }
+    ]
+  },
+  {
+    "id": "gd-10",
+    "question": "Đơn hàng có giá trị hàng hóa lớn hơn bao nhiêu thì không được hỗ trợ vận chuyển trên Shopee?",
+    "expected_answer": "Đơn hàng có tổng giá trị hàng hóa lớn hơn 50.000.000 VNĐ (tính theo giá khuyến mãi nếu có, không gồm mã giảm giá của Shopee/người bán, xu và phí vận chuyển) không được hỗ trợ vận chuyển.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "B.1.1.d",
+        "snippet": "Đơn hàng có giá trị hàng hóa lớn hơn 50.000.000VNĐ (Tổng giá trị hàng hóa với giá khuyến mãi nếu có, không bao gồm mã giảm giá của Shopee, mã giảm giá của Người Bán, xu và phí vận chuyển)."
+      }
+    ]
+  },
+  {
+    "id": "gd-11",
+    "question": "Người bán nên chọn kênh vận chuyển nào cho các sản phẩm cây cảnh?",
+    "expected_answer": "Đối với sản phẩm cây cảnh, người bán chỉ được hỗ trợ kênh vận chuyển Hỏa Tốc và Nhanh; người bán chịu hoàn toàn trách nhiệm nếu hàng hư hỏng, tổn thất trong quá trình vận chuyển dù đóng gói đúng quy cách.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "B.2.a",
+        "snippet": "Các sản phẩm cây cảnh: Người Bán chỉ được hỗ trợ kênh vận chuyển Hỏa Tốc và Nhanh. Người Bán sẽ hoàn toàn chịu trách nhiệm nếu có hư hỏng, tổn thất khi vận chuyển."
+      }
+    ]
+  },
+  {
+    "id": "gd-12",
+    "question": "Giới hạn kích thước và cân nặng tối đa cho phương thức giao hàng Hỏa Tốc là bao nhiêu?",
+    "expected_answer": "Với phương thức Hỏa Tốc, giới hạn kích thước tối đa mỗi cạnh là 60 x 60 x 60 cm và giới hạn cân nặng là 30 kg (áp dụng tương tự cho Hỏa Tốc - Ưu Tiên).",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "C.2.a",
+        "snippet": "Hỏa Tốc: 60 x 60 x 60 (cm), giới hạn cân nặng 30 kg. Hỏa Tốc - Ưu Tiên: 60 x 60 x 60 (cm), giới hạn cân nặng 30 kg."
+      }
+    ]
+  },
+  {
+    "id": "gd-13",
+    "question": "Cách tính khối lượng quy đổi (khối lượng thể tích) khi đóng gói hàng hóa là gì?",
+    "expected_answer": "Khối lượng quy đổi được tính bằng công thức Chiều rộng x Chiều dài x Chiều cao / 6.000 (kg), rồi so sánh với cân nặng thực tế, mức cao hơn sẽ được dùng để tính cước vận chuyển.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "C.2.c",
+        "snippet": "Khối lượng quy đổi được các đơn vị vận chuyển tính như sau: Chiều rộng x Chiều dài x Chiều cao /6.000 (kg)."
+      }
+    ]
+  },
+  {
+    "id": "gd-14",
+    "question": "Thời hạn khiếu nại đối với đơn giao không thành công bị hư hại khi hoàn trả là bao lâu?",
+    "expected_answer": "Nếu hàng bị hư hại hoặc không còn nguyên vẹn khi hoàn trả, người bán phải khiếu nại trong vòng 3 ngày sau khi đơn hàng được cập nhật trạng thái chuyển hoàn thành công; nếu hàng bị thất lạc khi hoàn trả, thời hạn là 7 ngày.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "D.1.b.i",
+        "snippet": "Hàng bị thất lạc khi hoàn trả: trong vòng 07 ngày sau khi đơn hàng được cập nhật trạng thái chuyển hoàn thành công. Hàng bị hư hại/ không còn nguyên vẹn khi hoàn trả: trong vòng 03 ngày."
+      }
+    ]
+  },
+  {
+    "id": "gd-15",
+    "question": "Mức bồi thường tối đa cho người bán khi hàng hóa bị thất lạc/hư hỏng trong vận chuyển là bao nhiêu?",
+    "expected_answer": "Khoản tiền bồi thường sẽ không vượt quá giá bán sản phẩm mà người bán đã niêm yết trên website/app Shopee tại thời điểm người mua đặt hàng (tổng giá trị hàng hóa theo giá khuyến mãi nếu có, không gồm mã giảm giá của Shopee, Shopee Xu và phí vận chuyển), và người bán phải cung cấp hóa đơn/chứng từ hợp pháp để được xem xét bồi thường.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "D.4.b",
+        "snippet": "Trong mọi trường hợp, khoản tiền bồi thường sẽ không vượt quá giá bán sản phẩm mà Người Bán đã niêm yết trên website https://shopee.vn/ và/hoặc Ứng dụng Shopee tại thời điểm Người Mua đặt hàng."
+      }
+    ]
+  },
+  {
+    "id": "gd-16",
+    "question": "Chính Sách Trả Hàng và Hoàn Tiền của Shopee áp dụng cho những đối tượng nào?",
+    "expected_answer": "Chính sách áp dụng cho Người Mua, Người Bán, các đơn vị cung cấp dịch vụ vận chuyển, nhân viên giao nhận (shipper) của các đơn vị vận chuyển trên Sàn Shopee, và/hoặc các bên khác có liên quan.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "1.1",
+        "snippet": "Chính Sách Trả Hàng và Hoàn Tiền này áp dụng đối với Người Mua, Người Bán, các đơn vị cung cấp dịch vụ vận chuyển, nhân viên giao nhận (shipper) của các đơn vị cung cấp dịch vụ vận chuyển trên Sàn Giao Dịch Thương Mại Điện Tử Shopee và/hoặc các bên khác có liên quan."
+      }
+    ]
+  },
+  {
+    "id": "gd-17",
+    "question": "Người bán có bao nhiêu thời gian để phản hồi khi nhận được thông báo yêu cầu trả hàng/hoàn tiền từ Shopee?",
+    "expected_answer": "Người bán cần gửi phản hồi trong vòng 2 ngày lịch kể từ ngày nhận được thông báo của Shopee nếu không đồng ý với quyết định hoàn tiền hoặc chưa nhận được sản phẩm hoàn trả. Nếu không phản hồi, Shopee hiểu rằng người bán đồng ý với quyết định xử lý.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "5",
+        "snippet": "Người Bán cần gửi phản hồi trong vòng 02 ngày lịch kể từ ngày nhận được thông báo của Shopee nếu không đồng ý với quyết định hoàn tiền của Shopee hoặc chưa nhận được Sản Phẩm Hoàn Trả. Sau thời gian này mà Shopee không nhận được phản hồi, Shopee hiểu rằng Người Bán đồng ý với quyết định xử lý."
+      }
+    ]
+  },
+  {
+    "id": "gd-18",
+    "question": "Người mua có thể yêu cầu hoàn trả sản phẩm mua tại Shopee Mall theo những hình thức nào?",
+    "expected_answer": "Với sản phẩm mua tại Shopee Mall, người mua có thể chọn \"Lấy hàng hoàn trả tại nhà\", \"Gửi hàng tại bưu cục\" (đều miễn phí vận chuyển), hoặc \"Tự sắp xếp\" (Shopee hoàn lại chi phí vận chuyển).",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-tra-hang-va-hoan-tien",
+        "section": "8.1",
+        "snippet": "Với Sản Phẩm mua tại Shopee Mall, Người Mua có thể lựa chọn hoàn trả: \"Lấy hàng hoàn trả tại nhà\" hoặc \"Gửi hàng tại bưu cục\" (miễn phí vận chuyển) hoặc \"Tự sắp xếp\" (Shopee hoàn lại chi phí vận chuyển)."
+      }
+    ]
+  },
+  {
+    "id": "gd-19",
+    "question": "Những nhóm hàng hóa nào không được vận chuyển bằng đường hàng không trên Shopee?",
+    "expected_answer": "Nhóm hàng không được vận chuyển bằng đường hàng không gồm: chất khí (bình gas, bình xịt, bình ô-xy...), chất lỏng dễ cháy (sơn, xăng, dầu, cồn, rượu, keo dán, nước hoa...), chất rắn dễ cháy, chất ô-xy hóa, sản phẩm có từ trường (nam châm), và thiết bị điện tử có tích điện (pin, pin sạc dự phòng, điện thoại...).",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "B.3.b.i",
+        "snippet": "Chất khí (Bình gas, bình xịt phòng, bình xịt côn trùng, xịt tóc, bình ô-xy để thở...); Chất lỏng dễ cháy (Sơn, xăng, dầu, cồn, rượu, keo dán, nước hoa...); Chất rắn dễ cháy; Chất ô xy hóa; Sản phẩm có từ trường (Nam châm); Thiết bị điện tử có tích điện."
+      }
+    ]
+  },
+  {
+    "id": "gd-20",
+    "question": "Người khiếu nại phải cung cấp bằng chứng cho Shopee trong thời hạn bao lâu?",
+    "expected_answer": "Trừ khi Shopee có yêu cầu khác cho từng vụ việc cụ thể, người khiếu nại phải cung cấp bằng chứng trong vòng 24 giờ kể từ khi gửi yêu cầu khiếu nại hoặc khi nhận được yêu cầu từ Shopee. Không cung cấp đúng hạn có thể là lý do Shopee từ chối yêu cầu.",
+    "expected_context": [
+      {
+        "doc_id": "chinh-sach-van-chuyen-shopee",
+        "section": "D.3.c",
+        "snippet": "Trừ trường hợp có yêu cầu khác của Shopee trong từng vụ việc cụ thể, Người khiếu nại phải cung cấp bằng chứng trong vòng 24 giờ kể từ khi gửi yêu cầu khiếu nại đến Shopee hoặc khi nhận được yêu cầu từ Shopee."
+      }
+    ]
   }
 ]
