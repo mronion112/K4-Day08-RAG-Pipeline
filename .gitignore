@@ -14,9 +14,18 @@ data/_tmp_pdf/
 
 # Temp / cache
 .pytest_cache/
+.cache/
 *.tmp
 pageindex_doc_ids.json
 pageindex_pdfs/
+
+# Generated local vector database and supplied raw archive
+chroma_db/
+shopee_policy/
+shopee_policy.zip
+
+# Accidental nested copy of this repository
+/K4-Day08-RAG-Pipeline/
 
 # IDE
 .vscode/

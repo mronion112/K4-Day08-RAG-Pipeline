@@ -1,0 +1,26 @@
+[
+  {
+    "filename": "chinh-sach-bao-mat.pdf",
+    "title": "Chính sách bảo mật",
+    "url": "https://help.shopee.vn/portal/4/article/77244",
+    "customer_role": "both",
+    "category": "privacy_security",
+    "original_snapshot": "shopee_policy/legal/chinh-sach-bao-mat.md"
+  },
+  {
+    "filename": "chinh-sach-tra-hang-va-hoan-tien.pdf",
+    "title": "Chính sách trả hàng và hoàn tiền",
+    "url": "https://help.shopee.vn/portal/4/article/77265",
+    "customer_role": "buyer",
+    "category": "returns_refunds",
+    "original_snapshot": "shopee_policy/legal/chinh-sach-tra-hang-va-hoan-tien.md"
+  },
+  {
+    "filename": "chinh-sach-van-chuyen-shopee.pdf",
+    "title": "Chính sách vận chuyển Shopee",
+    "url": "https://help.shopee.vn/portal/4/article/77484",
+    "customer_role": "buyer",
+    "category": "shipping",
+    "original_snapshot": "shopee_policy/legal/chinh-sach-van-chuyen-shopee.md"
+  }
+]
