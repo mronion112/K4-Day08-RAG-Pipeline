@@ -4,8 +4,8 @@
 
 - **Họ và tên:** Đào Kiều Thịnh Quang
 - **MSSV:** 2A202601014
-- **Phần việc được giao:** Task 10 — Generation có Citation và giao diện Streamlit Chatbot
-- **Các file phụ trách:** `src/task10_generation.py` và tích hợp/kiểm tra `app.py`
+- **Phần việc được giao:** Task 10 — Generation có Citation, giao diện Streamlit Chatbot và hỗ trợ tổng hợp pipeline của nhóm
+- **Các file phụ trách:** `src/task10_generation.py`, tích hợp/kiểm tra `app.py` và kiểm thử điểm nối với Task 9
 
 ## 1. Task được nhóm giao
 
@@ -18,6 +18,14 @@ Phần việc cá nhân gồm hai nội dung:
    - gọi LLM để sinh câu trả lời dựa hoàn toàn trên evidence;
    - từ chối trả lời khi không có đủ evidence.
 2. Tích hợp Task 10 vào **Streamlit UI** để người dùng nhập câu hỏi, xem câu trả lời, nguồn tham khảo và retrieval score.
+
+Ngoài phần code được giao, tôi hỗ trợ tổng hợp các phần đã hoàn thành của nhóm để kiểm tra luồng end-to-end. Tôi không nhận triển khai hay viết báo cáo thay cho owner của Task 1–9.
+
+### Phạm vi Task 7–8
+
+Trong thời gian thực hành trên lớp, nhóm không kịp hoàn thiện Task 7 và Task 8. Riêng Task 8 còn phụ thuộc PageIndex/API nhưng nhóm không có API key miễn phí phù hợp để tích hợp và kiểm thử ổn định. Vì vậy hai module này được giữ ở trạng thái skip thay vì đưa code chưa được xác minh vào bản demo.
+
+Để pipeline vẫn chạy an toàn, Task 9 dùng RRF tối thiểu nội bộ để hợp nhất Semantic Search và BM25; khi evidence yếu mà BM25 không có kết quả, pipeline trả danh sách rỗng để Task 10 từ chối trả lời. Cách xử lý này phục vụ tích hợp và không được trình bày như việc đã hoàn thành độc lập Task 7 hoặc Task 8.
 
 ## 2. Nội dung đã implement
 
@@ -206,7 +214,7 @@ Task 4: Chunk + ChromaDB
   -> app.py: Chat UI + Sources
 ```
 
-Do Task 7 và Task 8 không nằm trong phạm vi hoàn thiện cuối cùng, Task 9 tự hợp nhất kết quả dense và BM25 bằng RRF tối thiểu. Khi semantic evidence yếu đồng thời BM25 không tìm được kết quả, Task 9 trả danh sách rỗng để Task 10 từ chối trả lời an toàn thay vì gọi PageIndex.
+Do Task 7 và Task 8 không hoàn thành trong thời gian trên lớp, Task 9 tự hợp nhất kết quả dense và BM25 bằng RRF tối thiểu. Task 8 còn vướng PageIndex/API và nhóm không có API key miễn phí phù hợp. Khi semantic evidence yếu đồng thời BM25 không tìm được kết quả, Task 9 trả danh sách rỗng để Task 10 từ chối trả lời an toàn thay vì gọi PageIndex.
 
 Điểm nối chính là:
 
@@ -229,4 +237,4 @@ Sau khi nhận kết quả, Task 10 tạo câu trả lời và trả lại nguy�
 
 ## Kết luận
 
-Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**; sau khi tích hợp pipeline, toàn bộ bộ test đạt **30 passed, 5 skipped** (các skip thuộc định dạng dữ liệu thay thế và Task 7–8 được bỏ qua), đồng thời Streamlit AppTest khởi chạy và trả lời truy vấn thật mà không có exception.
+Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**; sau khi tích hợp pipeline, toàn bộ bộ test đạt **30 passed, 5 skipped**. Trong đó Task 7–8 được ghi nhận là skip vì không kịp hoàn thiện trong thời gian trên lớp và Task 8 thiếu API key miễn phí phù hợp. Streamlit AppTest khởi chạy và trả lời truy vấn thật mà không có exception.
