@@ -17,6 +17,7 @@ Hướng dẫn:
 """
 
 import json
+import shutil
 from pathlib import Path
 
 from markitdown import MarkItDown
@@ -36,9 +37,12 @@ def convert_legal_docs():
     for filepath in sorted(legal_dir.iterdir()):
         if filepath.suffix.lower() in (".pdf", ".docx", ".doc"):
             print(f"Converting: {filepath.name}")
+            output_path = output_dir / f"{filepath.stem}.md"
+            if output_path.exists() and output_path.stat().st_size > 0:
+                print(f"  ↷ Kept existing standardized file: {output_path}")
+                continue
             try:
                 result = md.convert(str(filepath))
-                output_path = output_dir / f"{filepath.stem}.md"
                 output_path.write_text(result.text_content, encoding="utf-8")
                 print(f"  ✓ Saved: {output_path}")
             except Exception as e:
@@ -46,7 +50,7 @@ def convert_legal_docs():
 
 
 def convert_news_articles():
-    """Convert files trong data/landing/news/ sang markdown."""
+    """Chuẩn hóa PDF/DOCX/JSON/Markdown trong ``landing/news``."""
     news_dir = LANDING_DIR / "news"
     output_dir = OUTPUT_DIR / "news"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -54,15 +58,33 @@ def convert_news_articles():
     md = MarkItDown()
 
     for filepath in sorted(news_dir.iterdir()):
-        if filepath.suffix.lower() in (".pdf", ".docx", ".doc"):
-            print(f"Converting: {filepath.name}")
-            try:
+        suffix = filepath.suffix.lower()
+        if suffix not in (".pdf", ".docx", ".doc", ".json", ".md"):
+            continue
+
+        output_path = output_dir / f"{filepath.stem}.md"
+        print(f"Converting: {filepath.name}")
+        try:
+            if suffix == ".md":
+                # Dữ liệu nhóm nhận được đã là Markdown có YAML front matter.
+                # Copy nguyên văn để không làm mất metadata citation/customer_role.
+                if filepath.resolve() != output_path.resolve():
+                    shutil.copyfile(filepath, output_path)
+            elif suffix == ".json":
+                data = json.loads(filepath.read_text(encoding="utf-8"))
+                header = (
+                    f"# {data.get('title', 'Unknown')}\n\n"
+                    f"**Source:** {data.get('url', 'N/A')}\n"
+                    f"**Crawled:** {data.get('date_crawled', 'N/A')}\n\n---\n\n"
+                )
+                content = data.get("content_markdown") or data.get("content") or ""
+                output_path.write_text(header + str(content), encoding="utf-8")
+            else:
                 result = md.convert(str(filepath))
-                output_path = output_dir / f"{filepath.stem}.md"
                 output_path.write_text(result.text_content, encoding="utf-8")
-                print(f"  ✓ Saved: {output_path}")
-            except Exception as e:
-                print(f"  ✗ Error: {e}")
+            print(f"  ✓ Saved: {output_path}")
+        except Exception as e:
+            print(f"  ✗ Error: {e}")
 
 
 def convert_all():

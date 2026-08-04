@@ -95,7 +95,7 @@ System prompt yêu cầu:
 
 #### Fallback phục vụ phát triển độc lập
 
-Trong thời gian Task 4–9 chưa hoàn thiện, Task 10 có lexical fallback chỉ đọc các file Markdown trong `data/standardized`. Fallback chỉ chạy khi `Task 9.retrieve()` ném `NotImplementedError`; các lỗi runtime của pipeline thật không bị che giấu. Khi Task 9 hoàn thiện, Task 10 tự động sử dụng pipeline chính mà không cần thay đổi UI.
+Task 10 có lexical fallback chỉ đọc các file Markdown trong `data/standardized`. Fallback chỉ chạy khi `Task 9.retrieve()` ném `NotImplementedError`; các lỗi runtime của pipeline thật không bị che giấu. Sau khi tích hợp Task 9, luồng chạy chính tự động sử dụng hybrid retrieval mà không cần thay đổi UI.
 
 ### 2.2. Streamlit UI — `app.py`
 
@@ -188,12 +188,13 @@ Task 10 là bước cuối sau retrieval:
 Task 4: Chunk + ChromaDB
   -> Task 5: Semantic Search
   -> Task 6: BM25
-  -> Task 7: RRF Reranking
-  -> Task 8: PageIndex Fallback
-  -> Task 9: Retrieval Pipeline
+  -> Task 9: Hybrid Retrieval + RRF tối thiểu
+     (Task 7 và Task 8 được nhóm bỏ qua)
   -> Task 10: Reorder + Context + LLM + Citation
   -> app.py: Chat UI + Sources
 ```
+
+Do Task 7 và Task 8 không nằm trong phạm vi hoàn thiện cuối cùng, Task 9 tự hợp nhất kết quả dense và BM25 bằng RRF tối thiểu. Khi semantic evidence yếu đồng thời BM25 không tìm được kết quả, Task 9 trả danh sách rỗng để Task 10 từ chối trả lời an toàn thay vì gọi PageIndex.
 
 Điểm nối chính là:
 
@@ -216,4 +217,4 @@ Sau khi nhận kết quả, Task 10 tạo câu trả lời và trả lại nguy�
 
 ## Kết luận
 
-Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**, và Streamlit AppTest khởi chạy không có exception.
+Phần Task 10 đã đáp ứng document reordering, context formatting, citation, no-evidence handling, provider routing và output contract cho Streamlit. Pytest chính thức của Task 10 đạt **3/3**; sau khi tích hợp pipeline, toàn bộ bộ test đạt **30 passed, 5 skipped** (các skip thuộc định dạng dữ liệu thay thế và Task 7–8 được bỏ qua), đồng thời Streamlit AppTest khởi chạy và trả lời truy vấn thật mà không có exception.

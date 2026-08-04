@@ -13,6 +13,8 @@ fpdf2>=2.7.0
 # Task 4 - Chunking & Indexing
 langchain-text-splitters>=0.2.0
 chromadb>=0.5.0
+# ChromaDB 0.5 dùng API capture cũ; PostHog 4+ gây warning ở mọi query.
+posthog>=2.4,<4
 
 # Task 4/5 - Embedding provider (mac dinh: sentence_transformers, local, khong can API key)
 # Doi provider qua bien EMBEDDING_PROVIDER trong .env: sentence_transformers | google | openai
