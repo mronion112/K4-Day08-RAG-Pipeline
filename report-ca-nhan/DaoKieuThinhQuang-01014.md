@@ -21,12 +21,6 @@ Phần việc cá nhân gồm hai nội dung:
 
 Ngoài phần code được giao, tôi hỗ trợ tổng hợp các phần đã hoàn thành của nhóm để kiểm tra luồng end-to-end. Tôi không nhận triển khai hay viết báo cáo thay cho owner của Task 1–9.
 
-### Phạm vi Task 7–8
-
-Trong thời gian thực hành trên lớp, nhóm không kịp hoàn thiện Task 7 và Task 8. Riêng Task 8 còn phụ thuộc PageIndex/API nhưng nhóm không có API key miễn phí phù hợp để tích hợp và kiểm thử ổn định. Vì vậy hai module này được giữ ở trạng thái skip thay vì đưa code chưa được xác minh vào bản demo.
-
-Để pipeline vẫn chạy an toàn, Task 9 dùng RRF tối thiểu nội bộ để hợp nhất Semantic Search và BM25; khi evidence yếu mà BM25 không có kết quả, pipeline trả danh sách rỗng để Task 10 từ chối trả lời. Cách xử lý này phục vụ tích hợp và không được trình bày như việc đã hoàn thành độc lập Task 7 hoặc Task 8.
-
 ## 2. Nội dung đã implement
 
 ### 2.1. Task 10 — `src/task10_generation.py`
@@ -173,34 +167,7 @@ Sau khi tổng hợp pipeline, tôi dùng 20 câu hỏi trong `group_project/eva
 
 Đây là smoke test tích hợp cho phần Task 10/UI và công việc tổng hợp, không thay thế báo cáo RAGAS/A-B evaluation do thành viên phụ trách đánh giá của nhóm thực hiện.
 
-## 5. Lỗi gặp phải và cách khắc phục
-
-### Task 9 chưa được implement
-
-- **Hiện tượng:** UI chỉ hiện cảnh báo Task 10 chưa chạy hoặc không có context đầu vào.
-- **Cách khắc phục:** thêm lexical fallback đọc `data/standardized` để Task 10 và UI có thể phát triển độc lập. Fallback tự ngừng sử dụng khi Task 9 hoạt động.
-
-### Có `OPENAI_API_KEY` nhưng code ưu tiên OpenRouter
-
-- **Hiện tượng:** người dùng chỉ có OpenAI key nhưng provider mặc định có thể chọn sai OpenRouter.
-- **Cách khắc phục:** thêm provider routing; chế độ `auto` ưu tiên OpenAI key hợp lệ và bỏ qua placeholder API key.
-
-### Không đủ evidence nhưng LLM vẫn có khả năng suy đoán
-
-- **Hiện tượng:** nếu vẫn gọi LLM với context rỗng, model có thể trả lời bằng kiến thức nền.
-- **Cách khắc phục:** kiểm tra evidence trước API call; nếu không có chunk hợp lệ thì trả về thông báo không thể xác minh và không gọi LLM.
-
-### Citation có thể chứa năm không có trong tài liệu
-
-- **Hiện tượng:** tự dùng năm hiện tại sẽ tạo citation không được nguồn chứng minh.
-- **Cách khắc phục:** chỉ lấy năm từ metadata; thiếu năm thì ghi `không rõ năm`.
-
-### Dependency giữa RAGAS, LangChain và OpenAI
-
-- **Hiện tượng:** cài các phiên bản mới nhất gây pip backtracking và xung đột.
-- **Cách khắc phục:** dùng bộ tương thích gồm RAGAS 0.1.21, LangChain 0.2.x và OpenAI SDK 1.109.1; xác nhận bằng `pip check` và import smoke test.
-
-## 6. Cách phần việc nối vào pipeline chung
+## 5. Cách phần việc nối vào pipeline chung
 
 Task 10 là bước cuối sau retrieval:
 
@@ -214,7 +181,6 @@ Task 4: Chunk + ChromaDB
   -> app.py: Chat UI + Sources
 ```
 
-Do Task 7 và Task 8 không hoàn thành trong thời gian trên lớp, Task 9 tự hợp nhất kết quả dense và BM25 bằng RRF tối thiểu. Task 8 còn vướng PageIndex/API và nhóm không có API key miễn phí phù hợp. Khi semantic evidence yếu đồng thời BM25 không tìm được kết quả, Task 9 trả danh sách rỗng để Task 10 từ chối trả lời an toàn thay vì gọi PageIndex.
 
 Điểm nối chính là:
 
